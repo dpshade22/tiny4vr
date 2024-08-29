@@ -1,30 +1,30 @@
 {
   "manifest": "arweave/paths",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "index": {
     "path": "index.html"
   },
   "fallback": {
-    "id": "pmLEd25ldpenU0lt46qjb6PKkAHlDZOuo849dgtDQno"
+    "id": "OMh7afemYBJGHtZ3yqHyC34DM7nPXH2g4RDVctKtC60"
   },
   "paths": {
-    "index.html": {
-      "id": "pmLEd25ldpenU0lt46qjb6PKkAHlDZOuo849dgtDQno"
+    "js/index.js": {
+      "id": "ag2z-4c3LglTmTyWwb5UrDQJ0JjdCLUw74xyqt5-4MQ"
     },
     "assets/4vrtiny.png": {
-      "id": "k_qYktE4beGuP3GEM7pbRvz47aKLZ43IHXOdXZA7wTY"
-    },
-    "assets/favicon.ico": {
-      "id": "ZrIKGm7IwZbdajACOn2tqB-3Ck5wk2W-5rw7a_2O_jA"
+      "id": "dZrsPAUTR7LSFnEl2_cn3s6onZfkDEfr6Yh5R96fq2k"
     },
     "lua/main.lua": {
-      "id": "OvjP67zIoxcCwOvX8eOluB067wWOtWUJ_jeVQ3gsmd4"
-    },
-    "js/index.js": {
-      "id": "HBWEI-WyODiHzhr05Ex_k-m4GUhRPw1TmCdQdF-bXDg"
+      "id": "vgODJmy8EwNeEgaB0na2k7rWn0BMsQm9dZ2EYHEpa5Q"
     },
     "css/styles.css": {
-      "id": "Dxn0passpeW8fL9DDlYcJ34I15VRFvms07aT2VcVSy0"
+      "id": "-Pem9Ag25yJ5U9imv7D_fy7Lqf80qqeSJR5KtY4uFlo"
+    },
+    "index.html": {
+      "id": "OMh7afemYBJGHtZ3yqHyC34DM7nPXH2g4RDVctKtC60"
+    },
+    "assets/favicon.ico": {
+      "id": "w7zP4yr8KcpTd6l3HQRQeFdo8Ah1Q-xj7na4b5rLQr8"
     }
   }
 }

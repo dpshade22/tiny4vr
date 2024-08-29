@@ -37,7 +37,6 @@ form {
 }
 
 input[type="url"] {
-    width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border: none;
