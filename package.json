@@ -18,7 +18,8 @@
     "crypto-browserify": "^3.12.0"
   },
   "scripts": {
-    "build": "bun run build.js",
-    "start": "bun run dev.js"
+    "build": "bun run scripts/build.js",
+    "start": "bun run scripts/dev.js",
+    "deploy": "bun run scripts/uploadManifest.js"
   }
 }

@@ -44,6 +44,35 @@ input[type="url"] {
     border-radius: 5px;
     background-color: #3a3a3a;
     color: #ffffff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input[type="url"]:focus {
+    background-color: #2a2a2a;
+    box-shadow: 0 0 0 2px rgba(92, 206, 255, 0.5);
+}
+
+input[type="url"]::placeholder {
+    color: #999;
+}
+
+/* Webkit browsers like Chrome, Safari */
+input[type="url"]:-webkit-autofill,
+input[type="url"]:-webkit-autofill:hover,
+input[type="url"]:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff;
+    -webkit-box-shadow: 0 0 0px 1000px #2a2a2a inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Firefox */
+input[type="url"]:autofill,
+input[type="url"]:autofill:hover,
+input[type="url"]:autofill:focus {
+    -webkit-text-fill-color: #ffffff;
+    -webkit-box-shadow: 0 0 0px 1000px #2a2a2a inset;
+    filter: none;
 }
 
 button {
@@ -75,18 +104,58 @@ button:hover {
 arweave-wallet-connection {
     display: block;
 }
-#checkUrlButton {
-    background-color: #7bd7ff;
-}
-
-#checkUrlButton:hover {
-    background-color: #5abcff; /* A slightly darker shade for hover effect */
-}
 
 #submitUrlButton {
-    background-color: #ffd194;
+    background-color: #5cceff;
 }
 
 #submitUrlButton:hover {
-    background-color: #ffc670; /* A slightly darker shade for hover effect */
+    background-color: #1fbcff; /* A slightly darker shade for hover effect */
+}
+
+#result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    word-break: break-all;
+    border-left: 4px solid #5cceff;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#result a {
+    color: #5cceff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+#result a:hover {
+    color: #1fbcff;
+    text-decoration: underline;
+}
+
+/* You can also add an icon before the result text */
+#result::before {
+    content: "🔗";
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Add a subtle animation when the result appears */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#result {
+    animation: fadeIn 0.3s ease-out;
 }

@@ -11,9 +11,6 @@ const argql = arGql();
 class ArweaveWalletConnection extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
-    this.shadowRoot.innerHTML = this.getTemplate();
-    this.initElements();
     this.walletAddress = null;
     this.signer = null;
     this.authMethod = null;
@@ -68,13 +65,14 @@ class ArweaveWalletConnection extends HTMLElement {
         this.signer = createDataItemSigner(
           this.authMethod === "Othent" ? othent : window.arweaveWallet,
         );
-        this.updateUIAfterConnect();
+        return true;
       } else {
         throw new Error("Failed to obtain wallet address");
       }
     } catch (error) {
       console.error("Wallet connection failed:", error);
       alert("Failed to connect wallet. Please try again.");
+      return false;
     }
   }
 
@@ -140,31 +138,72 @@ customElements.define("arweave-wallet-connection", ArweaveWalletConnection);
 
 // UI Functions
 function showMainUI(message = "") {
+  const previousUrl = document.getElementById("longUrl")?.value;
   document.body.innerHTML = `
     <div class="container">
       <h1><img src="./assets/4vrtiny.png" alt="4vrtiny" class="logo"></h1>
       <form id="urlForm">
         <input type="url" id="longUrl" placeholder="Enter long URL" required />
-        <button type="button" id="checkUrlButton">Check URL</button>
-        <button type="submit" id="submitUrlButton" style="display: none;">Submit URL</button>
+        <button type="submit" id="submitUrlButton">Submit URL</button>
       </form>
       ${message ? `<div id="result">${message}</div>` : ""}
       <arweave-wallet-connection></arweave-wallet-connection>
     </div>
   `;
 
-  document.getElementById("checkUrlButton").addEventListener("click", checkUrl);
-  document
-    .getElementById("submitUrlButton")
-    .addEventListener("click", submitUrl);
-  document
-    .getElementById("urlForm")
-    .addEventListener("submit", (event) => event.preventDefault());
+  // Set up event listeners
+  document.getElementById("urlForm").addEventListener("submit", handleSubmit);
+
+  // Restore the previous URL if it exists
+  if (previousUrl) {
+    document.getElementById("longUrl").value = previousUrl;
+  }
+}
+
+async function handleSubmit(event) {
+  event.preventDefault();
+  const longUrl = document.getElementById("longUrl").value;
+  if (!longUrl) {
+    alert("Please enter a URL.");
+    return;
+  }
+
+  try {
+    const existingShortCode = await getExistingShortCode(longUrl);
+    if (existingShortCode) {
+      // URL already exists, show the short URL
+      const currentUrl = window.location.href;
+      const baseUrl = currentUrl.endsWith("/") ? currentUrl : `${currentUrl}/`;
+      const shortUrl = baseUrl + existingShortCode;
+      showMainUI(
+        `Existing short URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`,
+      );
+    } else {
+      // URL doesn't exist, attempt to connect wallet and create short URL
+      const walletConnection = document.querySelector(
+        "arweave-wallet-connection",
+      );
+      if (!walletConnection.walletAddress) {
+        const connected = await walletConnection.connectWallet();
+        if (!connected) {
+          showMainUI(
+            "Wallet connection is required to create a new short URL. Please try again.",
+          );
+          return;
+        }
+      }
+      await createShortUrl(longUrl);
+    }
+  } catch (error) {
+    console.error("Error handling URL submission:", error);
+    showMainUI(`An error occurred: ${error.message}`);
+  }
 }
 
 // URL Operations
 async function checkUrl() {
-  const longUrl = document.getElementById("longUrl").value;
+  const longUrlInput = document.getElementById("longUrl");
+  const longUrl = longUrlInput.value;
   if (!longUrl) {
     alert("Please enter a URL to check.");
     return;
@@ -185,9 +224,14 @@ async function checkUrl() {
       showMainUI(
         "This URL hasn't been shortened yet. Please connect your wallet to submit it.",
       );
-      document.getElementById("checkUrlButton").style.display = "none";
-      document.getElementById("submitUrlButton").style.display = "block";
     }
+
+    // After showing the main UI, set the input value back to the original URL
+    document.getElementById("longUrl").value = longUrl;
+
+    // Update button visibility
+    document.getElementById("checkUrlButton").style.display = "none";
+    document.getElementById("submitUrlButton").style.display = "block";
   } catch (error) {
     console.error("Error checking URL:", error);
     showMainUI(`An error occurred while checking the URL: ${error.message}`);
@@ -236,12 +280,8 @@ async function createShortUrl(longUrl) {
     const shortCode = response.shortCode;
     console.log("Short code received from backend:", shortCode);
 
-    // Get the current URL without any hash or search parameters
     const currentUrl = window.location.href;
-
-    // Ensure the URL ends with a slash before appending the short code
     const baseUrl = currentUrl.endsWith("/") ? currentUrl : `${currentUrl}/`;
-
     const shortUrl = `${baseUrl}${shortCode}`;
     showMainUI(
       `Your new short URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`,

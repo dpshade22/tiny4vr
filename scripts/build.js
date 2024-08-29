@@ -1,14 +1,17 @@
 import { build } from "bun";
 import { execSync } from "child_process";
 import { cpSync, mkdirSync, rmSync } from "fs";
-import { resolve, dirname } from "path";
+import { resolve, dirname, join } from "path";
+
+// Get the root directory of the project
+const rootDir = resolve(__dirname, "..");
 
 // Delete existing dist directory
 console.log("Deleting existing dist directory...");
-rmSync("dist", { recursive: true, force: true });
+rmSync(join(rootDir, "dist"), { recursive: true, force: true });
 
 // Create dist directory
-mkdirSync("dist", { recursive: true });
+mkdirSync(join(rootDir, "dist"), { recursive: true });
 
 // Copy files to dist
 const filesToCopy = [
@@ -19,15 +22,17 @@ const filesToCopy = [
 ];
 
 filesToCopy.forEach((file) => {
-  const destinationDir = resolve(file.to).split("/").slice(0, -1).join("/");
+  const fromPath = join(rootDir, file.from);
+  const toPath = join(rootDir, file.to);
+  const destinationDir = dirname(toPath);
   mkdirSync(destinationDir, { recursive: true });
-  cpSync(file.from, file.to, { recursive: true });
+  cpSync(fromPath, toPath, { recursive: true });
 });
 
 // Bundle the application
 let result = await build({
-  entrypoints: ["src/js/index.js"],
-  outdir: "dist/js",
+  entrypoints: [join(rootDir, "src/js/index.js")],
+  outdir: join(rootDir, "dist/js"),
   minify: true,
   target: "browser",
   define: {
