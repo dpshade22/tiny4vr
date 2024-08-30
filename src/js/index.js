@@ -257,6 +257,7 @@ async function submitUrl() {
   createShortUrl(longUrl);
 }
 
+// Modify the createShortUrl function
 async function createShortUrl(longUrl) {
   console.log("Creating short URL for:", longUrl);
   const walletConnection = document.querySelector("arweave-wallet-connection");
@@ -319,6 +320,7 @@ function generateShortCode(length = 6) {
   return code;
 }
 
+// Add this function to check if a short code already exists
 async function shortCodeExists(shortCode) {
   const query = `
     query {
@@ -326,6 +328,7 @@ async function shortCodeExists(shortCode) {
         tags: [
           { name: "App-Name", values: ["tiny4vr"] }
           { name: "Short-Code", values: ["${shortCode}"] }
+          { name: "From-Process", values: ["${PROCESS_ID}"] }
         ]
         first: 1
       ) {
