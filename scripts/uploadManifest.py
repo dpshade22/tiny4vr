@@ -3,7 +3,7 @@ import json
 import os
 
 def run_ardrive_command():
-    command = "ardrive upload-file -w /Users/dylanshade/Developer/arWallet.json -f /Users/dylanshade/Developer/AO/4vrtiny/dist -d 4vrtiny"
+    command = "ardrive upload-file -w /Users/dylanshade/Developer/arWallet.json -f /Users/dylanshade/Developer/AO/tiny4vr/dist -d tiny4vr"
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return result.stdout
 
@@ -12,7 +12,7 @@ def parse_output(output):
     file_data = {}
     for entity in data['created']:
         if entity['type'] == 'file':
-            file_path = os.path.relpath(entity['sourceUri'], '/Users/dylanshade/Developer/AO/4vrtiny/dist')
+            file_path = os.path.relpath(entity['sourceUri'], '/Users/dylanshade/Developer/AO/tiny4vr/dist')
             file_path = file_path.replace('\\', '/')  # Ensure forward slashes for paths
             file_data[file_path] = entity['dataTxId']
     return file_data

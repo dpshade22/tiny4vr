@@ -11,7 +11,7 @@ async function deploy() {
 
     // Deploy to Vercel
     const vercelOutput =
-      await $`vercel ../dist --yes --scope dpshade22 --name 4vrtiny`.text();
+      await $`vercel ../dist --yes --scope dpshade22 --name tiny4vr`.text();
 
     console.log(vercelOutput);
     console.log("Deployment to Vercel completed successfully.");

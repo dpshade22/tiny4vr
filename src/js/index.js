@@ -4,7 +4,7 @@ import { ArConnect } from "arweavekit/auth";
 import * as othent from "@othent/kms";
 
 // Constants
-const PROCESS_ID = "sycgVh1YzqZVY8j48j0wNuoyKDcyFhDPmw4fE8nDzrA";
+const PROCESS_ID = "BF0bKG5TVrnc9rDOMH3hRZSFwiuI8dloh-KMeZwi4cI";
 const argql = arGql();
 
 // Wallet Connection Component
@@ -137,16 +137,22 @@ class ArweaveWalletConnection extends HTMLElement {
 customElements.define("arweave-wallet-connection", ArweaveWalletConnection);
 
 // UI Functions
-function showMainUI(message = "") {
+function showMainUI(message = "", isLoading = false) {
   const previousUrl = document.getElementById("longUrl")?.value;
   document.body.innerHTML = `
     <div class="container">
-      <h1><img src="./assets/4vrtiny.png" alt="4vrtiny" class="logo"></h1>
+      <h1><img src="./assets/tiny4vr.png" alt="tiny4vr" class="logo"></h1>
       <form id="urlForm">
         <input type="url" id="longUrl" placeholder="Enter long URL" required />
         <button type="submit" id="submitUrlButton">Submit URL</button>
       </form>
-      ${message ? `<div id="result">${message}</div>` : ""}
+      ${
+        isLoading
+          ? `<div class="loading-container"><div class="loading"></div></div>`
+          : message
+            ? `<div id="result">${message}</div>`
+            : ""
+      }
       <arweave-wallet-connection></arweave-wallet-connection>
     </div>
   `;
@@ -169,6 +175,7 @@ async function handleSubmit(event) {
   }
 
   try {
+    showMainUI("", true); // Show loading indicator
     const existingShortCode = await getExistingShortCode(longUrl);
     if (existingShortCode) {
       // URL already exists, show the short URL
@@ -260,9 +267,17 @@ async function createShortUrl(longUrl) {
   }
 
   try {
+    showMainUI("", true); // Show loading indicator
+
+    let shortCode;
+    do {
+      shortCode = generateShortCode();
+    } while (await shortCodeExists(shortCode));
+
     const tags = [
       { name: "Action", value: "CreateShortURL" },
       { name: "LongURL", value: longUrl },
+      { name: "ShortCode", value: shortCode },
     ];
 
     const { Messages, Error } =
@@ -277,8 +292,7 @@ async function createShortUrl(longUrl) {
       throw new Error(response.error);
     }
 
-    const shortCode = response.shortCode;
-    console.log("Short code received from backend:", shortCode);
+    console.log("Short code created:", shortCode);
 
     const currentUrl = window.location.href;
     const baseUrl = currentUrl.endsWith("/") ? currentUrl : `${currentUrl}/`;
@@ -294,14 +308,55 @@ async function createShortUrl(longUrl) {
   }
 }
 
-// Arweave Query Functions
-async function getExistingShortCode(longUrl) {
+// Add this function to generate a short code
+function generateShortCode(length = 6) {
+  const chars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "";
+  for (let i = 0; i < length; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+async function shortCodeExists(shortCode) {
   const query = `
     query {
       transactions(
         tags: [
-          { name: "App-Name", values: ["4vrtiny"] }
+          { name: "App-Name", values: ["tiny4vr"] }
+          { name: "Short-Code", values: ["${shortCode}"] }
+        ]
+        first: 1
+      ) {
+        edges {
+          node {
+            id
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const results = await argql.run(query);
+    return results.data.transactions.edges.length > 0;
+  } catch (error) {
+    console.error("Error checking short code existence:", error);
+    throw error;
+  }
+}
+
+// Arweave Query Functions
+async function getExistingShortCode(longUrl) {
+  console.log("Checking for existing short code for URL:", longUrl);
+  const query = `
+    query {
+      transactions(
+        tags: [
+          { name: "App-Name", values: ["tiny4vr"] }
           { name: "Long-URL", values: ["${longUrl}"] }
+          { name: "From-Process", values: ["${PROCESS_ID}"] }
         ]
         first: 1
       ) {
@@ -317,54 +372,66 @@ async function getExistingShortCode(longUrl) {
     }
   `;
 
-  const results = await argql.run(query);
-  if (results.data.transactions.edges.length > 0) {
-    const tags = results.data.transactions.edges[0].node.tags;
-    return tags.find((tag) => tag.name === "Short-Code")?.value;
+  try {
+    const results = await argql.run(query);
+    console.log("Query results for existing short code:", results);
+
+    if (results.data.transactions.edges.length > 0) {
+      const tags = results.data.transactions.edges[0].node.tags;
+      const shortCode = tags.find((tag) => tag.name === "Short-Code")?.value;
+      console.log("Existing short code found:", shortCode);
+      return shortCode;
+    }
+    console.log("No existing short code found");
+    return null;
+  } catch (error) {
+    console.error("Error in getExistingShortCode:", error);
+    throw error;
   }
-  return null;
 }
 
 async function lookupAndRedirect(shortCode) {
   console.log("Looking up short code:", shortCode);
-  try {
-    const query = `
-      query {
-        transactions(
-          tags: [
-            { name: "App-Name", values: ["4vrtiny"] }
-            { name: "Short-Code", values: ["${shortCode}"] }
-          ]
-          first: 1
-        ) {
-          edges {
-            node {
-              tags {
-                name
-                value
-              }
+  showMainUI("", true);
+  const query = `
+    query {
+      transactions(
+        tags: [
+          { name: "App-Name", values: ["tiny4vr"] }
+          { name: "Short-Code", values: ["${shortCode}"] }
+          { name: "From-Process", values: ["${PROCESS_ID}"] }
+        ]
+        first: 1
+      ) {
+        edges {
+          node {
+            tags {
+              name
+              value
             }
           }
         }
       }
-    `;
+    }
+  `;
 
+  try {
     const results = await argql.run(query);
-    console.log("Query results:", results);
+    console.log("Query results for lookup:", results);
 
     if (results.data.transactions.edges.length > 0) {
       const tags = results.data.transactions.edges[0].node.tags;
       const longURL = tags.find((tag) => tag.name === "Long-URL")?.value;
 
       if (longURL) {
-        console.log("Redirecting to:", longURL);
+        console.log("Long URL found, redirecting to:", longURL);
         window.location.href = longURL;
       } else {
         console.error("Long URL not found for this short code");
         showMainUI("Short code not found.");
       }
     } else {
-      console.error("Short code not found");
+      console.error("Short code not found in query results");
       showMainUI("Short code not found.");
     }
   } catch (error) {
