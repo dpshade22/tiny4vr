@@ -1,7 +1,20 @@
+:root {
+    --bg-color: #0d0d0d;
+    --container-bg: #121212;
+    --input-bg: #3a3a3a;
+    --input-focus-bg: #2a2a2a;
+    --button-bg: #5cceff;
+    --button-hover-bg: #1fbcff;
+    --text-color: #ffffff;
+    --placeholder-color: #999;
+    --link-color: #5cceff;
+    --link-hover-color: #1fbcff;
+}
+
 body {
     font-family: "Arial", sans-serif;
-    background-color: #0d0d0d;
-    color: #ffffff;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,7 +23,7 @@ body {
 }
 
 .container {
-    background-color: #121212;
+    background-color: var(--container-bg);
     border-radius: 0.2rem;
     padding: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -22,11 +35,10 @@ body {
     max-width: 200px;
     height: auto;
     display: block;
-    margin: 0 auto 0;
+    margin: 0 auto;
 }
 
 h1 {
-    color: #ffffff;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -41,75 +53,47 @@ input[type="url"] {
     margin-bottom: 15px;
     border: none;
     border-radius: 5px;
-    background-color: #3a3a3a;
-    color: #ffffff;
+    background-color: var(--input-bg);
+    color: var(--text-color);
     outline: none;
     transition: all 0.3s ease;
 }
 
 input[type="url"]:focus {
-    background-color: #2a2a2a;
+    background-color: var(--input-focus-bg);
     box-shadow: 0 0 0 2px rgba(92, 206, 255, 0.5);
 }
 
 input[type="url"]::placeholder {
-    color: #999;
+    color: var(--placeholder-color);
 }
 
-/* Webkit browsers like Chrome, Safari */
+/* Autofill styles for both Webkit and Firefox */
 input[type="url"]:-webkit-autofill,
 input[type="url"]:-webkit-autofill:hover,
-input[type="url"]:-webkit-autofill:focus {
-    -webkit-text-fill-color: #ffffff;
-    -webkit-box-shadow: 0 0 0px 1000px #2a2a2a inset;
-    transition: background-color 5000s ease-in-out 0s;
-}
-
-/* Firefox */
+input[type="url"]:-webkit-autofill:focus,
 input[type="url"]:autofill,
 input[type="url"]:autofill:hover,
 input[type="url"]:autofill:focus {
-    -webkit-text-fill-color: #ffffff;
-    -webkit-box-shadow: 0 0 0px 1000px #2a2a2a inset;
+    -webkit-text-fill-color: var(--text-color);
+    -webkit-box-shadow: 0 0 0px 1000px var(--input-focus-bg) inset;
+    transition: background-color 5000s ease-in-out 0s;
     filter: none;
 }
 
 button {
     padding: 10px 20px;
-    background-color: #7bd7ff;
-    color: white;
+    background-color: var(--button-bg);
+    color: var(--text-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #357ab8;
-}
-
-#result {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #3a3a3a;
-    border-radius: 5px;
-    word-break: break-all;
-}
-
-#result a {
-    color: #7bd7ff;
-}
-
-arweave-wallet-connection {
-    display: block;
-}
-
-#submitUrlButton {
-    background-color: #5cceff;
-}
-
+button:hover,
 #submitUrlButton:hover {
-    background-color: #1fbcff; /* A slightly darker shade for hover effect */
+    background-color: var(--button-hover-bg);
 }
 
 #result {
@@ -117,30 +101,34 @@ arweave-wallet-connection {
     padding: 15px;
     background-color: #1e1e1e;
     border-radius: 5px;
-    word-break: break-all;
-    border-left: 4px solid #5cceff;
+    border-left: 4px solid var(--button-bg);
     font-size: 14px;
     line-height: 1.4;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    animation: fadeIn 0.3s ease-out;
+}
+
+#result::before {
+    content: "🔗";
+    margin-right: 10px;
+    font-size: 18px;
 }
 
 #result a {
-    color: #5cceff;
+    color: var(--link-color);
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s ease;
 }
 
 #result a:hover {
-    color: #1fbcff;
+    color: var(--link-hover-color);
     text-decoration: underline;
 }
 
-/* You can also add an icon before the result text */
-#result::before {
-    content: "🔗";
-    margin-right: 10px;
-    font-size: 18px;
+arweave-wallet-connection {
+    display: block;
 }
 
 .loading-container {
@@ -151,7 +139,6 @@ arweave-wallet-connection {
 }
 
 .loading {
-    display: inline-block;
     width: 30px;
     height: 30px;
     border: 3px solid rgba(255, 255, 255, 0.3);
@@ -165,7 +152,7 @@ arweave-wallet-connection {
         transform: rotate(360deg);
     }
 }
-/* Add a subtle animation when the result appears */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -177,6 +164,13 @@ arweave-wallet-connection {
     }
 }
 
-#result {
-    animation: fadeIn 0.3s ease-out;
+@media screen and (max-width: 768px) {
+    body {
+        overflow: hidden;
+    }
+
+    .container {
+        max-height: 100vh;
+        overflow-y: auto;
+    }
 }
