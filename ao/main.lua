@@ -7,15 +7,15 @@ Handlers.add('CreateShortURL',
     Handlers.utils.hasMatchingTag('Action', 'CreateShortURL'),
     function(msg)
         print("CreateShortURL handler called")
-        local longURL = msg.Tags["LongURL"]
-        local shortCode = msg.Tags["ShortCode"]
+        local longURL = msg.Tags["Long-URL"]
+        local shortCode = msg.Tags["Short-Code"]
         if not longURL or not shortCode then
             print("Error: Missing LongURL or ShortCode")
             ao.send({
                 Target = msg.From,
                 Action = "Response",
                 Tags = { ["Action"] = "CreateShortURL" },
-                Data = json.encode({ error = "Missing LongURL or ShortCode" })
+                Data = json.encode({ error = "Missing Long-URL or Short-Code" })
             })
             return
         end

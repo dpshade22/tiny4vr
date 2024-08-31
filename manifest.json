@@ -1,9 +1,30 @@
 {
+  "fallback": {
+    "id": "7ifIqgXphEuLmmtvHi4cGPFwDuhv4JFjxKY60zELfBU"
+  },
   "index": {
     "path": "index.html"
   },
   "manifest": "arweave/paths",
   "paths": {
+    "assets/favicon.ico": {
+      "id": "QeTAvt4otxRsM9u-7U5m4zl-z134g-deIM1z2lgu9uM"
+    },
+    "assets/tiny4vr.png": {
+      "id": "Yr5MwkR-O_Do059AAmaoxD2DxHWNoQoDkeBfH47NZWI"
+    },
+    "css/styles.css": {
+      "id": "--yHGslZeIXvMR0OKz4cfhwiqQZ0D00AdO7MC-ubLSw"
+    },
+    "index.html": {
+      "id": "7ifIqgXphEuLmmtvHi4cGPFwDuhv4JFjxKY60zELfBU"
+    },
+    "js/index.js": {
+      "id": "qgG3bP2_IGbyCcQpe7YUIe110Tq6MxZ8KI50vFK0mV4"
+    },
+    "lua/main.lua": {
+      "id": "nLxIZdK8UcqUtuGfA7_CxvFi5F7INIYLLnwZx67YZMo"
+    }
   },
   "version": "0.2.0"
 }
