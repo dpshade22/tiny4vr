@@ -1,0 +1,124 @@
+# Query 1: Get a specific build by Build-ID
+query GetBuildById {
+    transactions(
+        tags: [
+            { name: "App-Name", values: ["tiny4vr-builds"] }
+            { name: "Build-ID", values: ["your-build-id-here"] }
+        ]
+        first: 1
+    ) {
+        edges {
+            node {
+                id
+                tags {
+                    name
+                    value
+                }
+            }
+        }
+    }
+}
+
+# Query 2: Get a build by specific version
+query GetBuildByVersion {
+    transactions(
+        tags: [
+            { name: "App-Name", values: ["tiny4vr-builds"] }
+            { name: "App-Version", values: ["0.2.0"] }
+        ]
+        first: 1
+        sort: HEIGHT_DESC
+    ) {
+        edges {
+            node {
+                id
+                tags {
+                    name
+                    value
+                }
+            }
+        }
+    }
+}
+
+# Query 3: Get latest 100 development builds
+query GetDevelopmentBuilds {
+    transactions(
+        tags: [
+            { name: "App-Name", values: ["tiny4vr-builds"] }
+            { name: "Build-Type", values: ["development"] }
+        ]
+        first: 100
+        sort: HEIGHT_DESC
+    ) {
+        edges {
+            node {
+                id
+                tags {
+                    name
+                    value
+                }
+            }
+        }
+    }
+}
+
+# Query 4: Get latest 100 production builds
+query GetProductionBuilds {
+    transactions(
+        tags: [
+            { name: "App-Name", values: ["tiny4vr-builds"] }
+            { name: "Build-Type", values: ["production"] }
+        ]
+        first: 100
+        sort: HEIGHT_DESC
+    ) {
+        edges {
+            node {
+                id
+                tags {
+                    name
+                    value
+                }
+            }
+        }
+    }
+}
+
+# Query 5: Get latest 100 build states
+query GetBuildStates {
+    transactions(
+        tags: [{ name: "App-Name", values: ["tiny4vr-states"] }]
+        first: 100
+        sort: HEIGHT_DESC
+    ) {
+        edges {
+            node {
+                id
+                tags {
+                    name
+                    value
+                }
+            }
+        }
+    }
+}
+
+# Query 6: Get latest 100 builds (both production and development)
+query GetAllBuilds {
+    transactions(
+        tags: [{ name: "App-Name", values: ["tiny4vr-builds"] }]
+        first: 100
+        sort: HEIGHT_DESC
+    ) {
+        edges {
+            node {
+                id
+                tags {
+                    name
+                    value
+                }
+            }
+        }
+    }
+}

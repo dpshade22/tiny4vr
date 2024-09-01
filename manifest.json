@@ -1,6 +1,6 @@
 {
   "fallback": {
-    "id": "7ifIqgXphEuLmmtvHi4cGPFwDuhv4JFjxKY60zELfBU"
+    "id": "hyTn-L3Oo-4ytZBxTth6Omv8eDpcrJS7gSMWyMbaBjo"
   },
   "index": {
     "path": "index.html"
@@ -8,22 +8,22 @@
   "manifest": "arweave/paths",
   "paths": {
     "assets/favicon.ico": {
-      "id": "QeTAvt4otxRsM9u-7U5m4zl-z134g-deIM1z2lgu9uM"
+      "id": "LE1fin_7CcBrUy8fHQXv83IdEA75TA8ghIsJzeU_lIQ"
     },
     "assets/tiny4vr.png": {
-      "id": "Yr5MwkR-O_Do059AAmaoxD2DxHWNoQoDkeBfH47NZWI"
+      "id": "f9M06er1TMrLaNZzkFwXq-hKivSTuOzJId5ZNSjfUKc"
     },
     "css/styles.css": {
-      "id": "--yHGslZeIXvMR0OKz4cfhwiqQZ0D00AdO7MC-ubLSw"
+      "id": "Df3uBCk4_PsMQJbUmYvC3UCkcI9SrpPkvMqjFicg7ls"
     },
     "index.html": {
-      "id": "7ifIqgXphEuLmmtvHi4cGPFwDuhv4JFjxKY60zELfBU"
+      "id": "hyTn-L3Oo-4ytZBxTth6Omv8eDpcrJS7gSMWyMbaBjo"
     },
     "js/index.js": {
-      "id": "qgG3bP2_IGbyCcQpe7YUIe110Tq6MxZ8KI50vFK0mV4"
+      "id": "lPi1YwAxsUsnhVkXwkK0KmK9jc1eusQsrM-1FP28Q24"
     },
     "lua/main.lua": {
-      "id": "nLxIZdK8UcqUtuGfA7_CxvFi5F7INIYLLnwZx67YZMo"
+      "id": "9xUjZSbGjnV6gKQmU51KeDcEaZpZCDkHOSXwWveICRc"
     }
   },
   "version": "0.2.0"

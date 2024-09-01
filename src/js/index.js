@@ -67,7 +67,7 @@ class ArweaveWalletConnection extends HTMLElement {
         );
         return true;
       } else {
-        throw new Error("Failed to obtain wallet address");
+        console.error("Failed to obtain wallet address");
       }
     } catch (error) {
       console.error("Wallet connection failed:", error);
@@ -277,20 +277,16 @@ async function createShortUrl(longUrl) {
 
     const tags = [
       { name: "Action", value: "CreateShortURL" },
-      { name: "LongURL", value: longUrl },
-      { name: "ShortCode", value: shortCode },
+      { name: "Long-URL", value: longUrl },
+      { name: "Short-Code", value: shortCode },
     ];
 
     const { Messages, Error } =
       await walletConnection.sendMessageToArweave(tags);
 
-    if (Error) {
-      throw new Error(Error);
-    }
-
     const response = JSON.parse(Messages[0].Data);
     if (response.error) {
-      throw new Error(response.error);
+      console.error(response.error);
     }
 
     console.log("Short code created:", shortCode);
@@ -346,7 +342,6 @@ async function shortCodeExists(shortCode) {
     return results.data.transactions.edges.length > 0;
   } catch (error) {
     console.error("Error checking short code existence:", error);
-    throw error;
   }
 }
 
@@ -389,7 +384,6 @@ async function getExistingShortCode(longUrl) {
     return null;
   } catch (error) {
     console.error("Error in getExistingShortCode:", error);
-    throw error;
   }
 }
 

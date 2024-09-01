@@ -1,0 +1,37 @@
+{
+  "build_id": "1725165084-0804",
+  "build_timestamp": "2024-09-01 00:31:26",
+  "file_hash": "645434c3e857521fc00e6b5aa1c8805b86257bbc13c7f99614e8e468e459156d",
+  "files": {
+    "assets/favicon.ico": {
+      "tx_id": "LE1fin_7CcBrUy8fHQXv83IdEA75TA8ghIsJzeU_lIQ",
+      "type": "file"
+    },
+    "assets/tiny4vr.png": {
+      "tx_id": "f9M06er1TMrLaNZzkFwXq-hKivSTuOzJId5ZNSjfUKc",
+      "type": "file"
+    },
+    "css/styles.css": {
+      "tx_id": "Df3uBCk4_PsMQJbUmYvC3UCkcI9SrpPkvMqjFicg7ls",
+      "type": "file"
+    },
+    "index.html": {
+      "tx_id": "hyTn-L3Oo-4ytZBxTth6Omv8eDpcrJS7gSMWyMbaBjo",
+      "type": "file"
+    },
+    "js/index.js": {
+      "tx_id": "lPi1YwAxsUsnhVkXwkK0KmK9jc1eusQsrM-1FP28Q24",
+      "type": "file"
+    },
+    "lua/main.lua": {
+      "tx_id": "9xUjZSbGjnV6gKQmU51KeDcEaZpZCDkHOSXwWveICRc",
+      "type": "file"
+    }
+  },
+  "is_production_build": true,
+  "manifest": {
+    "tx_id": "8a55fSQiYziOxeW2gBmolHIMjyCYt1zy8QgW5gRuxN4",
+    "type": "file"
+  },
+  "version": "0.1.0"
+}
