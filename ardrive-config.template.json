@@ -1,0 +1,4 @@
+{
+  "parentFolderId": "your-ardrive-folder-id-here",
+  "walletPath": "/path/to/your/arweave/wallet.json"
+}
