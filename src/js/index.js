@@ -3,17 +3,24 @@ import { arGql } from "ar-gql";
 import { ArConnect } from "arweavekit/auth";
 import * as othent from "@othent/kms";
 
-// Constants
 const PROCESS_ID = "BF0bKG5TVrnc9rDOMH3hRZSFwiuI8dloh-KMeZwi4cI";
 const argql = arGql();
 
-// Wallet Connection Component
 class ArweaveWalletConnection extends HTMLElement {
   constructor() {
     super();
     this.walletAddress = null;
     this.signer = null;
     this.authMethod = null;
+    this.attachShadow({ mode: "open" });
+  }
+
+  connectedCallback() {
+    this.render();
+  }
+
+  render() {
+    this.shadowRoot.innerHTML = this.getTemplate();
   }
 
   getTemplate() {
@@ -34,18 +41,7 @@ class ArweaveWalletConnection extends HTMLElement {
           background-color: #357ab8;
         }
       </style>
-      <button id="connectWalletButton">Connect Wallet</button>
     `;
-  }
-
-  initElements() {
-    this.connectWalletButton = this.shadowRoot.getElementById(
-      "connectWalletButton",
-    );
-    this.connectWalletButton.addEventListener(
-      "click",
-      this.handleWalletConnection.bind(this),
-    );
   }
 
   async handleWalletConnection() {
@@ -59,21 +55,19 @@ class ArweaveWalletConnection extends HTMLElement {
   async connectWallet() {
     try {
       (await this.tryArConnect()) || (await this.tryOthent());
-
       if (this.walletAddress) {
         console.log(`Wallet connected successfully: ${this.walletAddress}`);
         this.signer = createDataItemSigner(
           this.authMethod === "Othent" ? othent : window.arweaveWallet,
         );
         return true;
-      } else {
-        console.error("Failed to obtain wallet address");
       }
+      console.error("Failed to obtain wallet address");
     } catch (error) {
       console.error("Wallet connection failed:", error);
       alert("Failed to connect wallet. Please try again.");
-      return false;
     }
+    return false;
   }
 
   async tryArConnect() {
@@ -108,62 +102,43 @@ class ArweaveWalletConnection extends HTMLElement {
     try {
       const messageId = await message({
         process: PROCESS_ID,
-        tags: tags,
+        tags,
         signer: this.signer,
-      }).catch(console.error);
-
+      });
       let { Messages, Error } = await result({
         process: PROCESS_ID,
         message: messageId,
       });
-
       if (Error) console.error(Error);
       else
         console.log(
-          `Sent Action: ${tags.find((tag) => tag.name == "Action").value}`,
+          `Sent Action: ${tags.find((tag) => tag.name === "Action").value}`,
         );
-
       return { Messages, Error };
-    } finally {
-      console.log("Message sent");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      throw error;
     }
-  }
-
-  updateUIAfterConnect() {
-    this.connectWalletButton.textContent = `Connected: ${this.walletAddress.slice(0, 5)}...${this.walletAddress.slice(-5)}`;
   }
 }
 
 customElements.define("arweave-wallet-connection", ArweaveWalletConnection);
 
-// UI Functions
 function showMainUI(message = "", isLoading = false) {
   const previousUrl = document.getElementById("longUrl")?.value;
   document.body.innerHTML = `
     <div class="container">
       <h1><img src="./assets/tiny4vr.png" alt="tiny4vr" class="logo"></h1>
       <form id="urlForm">
-        <input type="url" id="longUrl" placeholder="Enter long URL" required />
-        <button type="submit" id="submitUrlButton">Submit URL</button>
+        <input type="url" id="longUrl" placeholder="Enter long URL" required value="${previousUrl || ""}"/>
+        <button type="submit">Submit URL</button>
       </form>
-      ${
-        isLoading
-          ? `<div class="loading-container"><div class="loading"></div></div>`
-          : message
-            ? `<div id="result">${message}</div>`
-            : ""
-      }
+      ${isLoading ? `<div class="loading-container"><div class="loading"></div></div>` : ""}
+      ${message ? `<div id="result">${message}</div>` : ""}
       <arweave-wallet-connection></arweave-wallet-connection>
     </div>
   `;
-
-  // Set up event listeners
   document.getElementById("urlForm").addEventListener("submit", handleSubmit);
-
-  // Restore the previous URL if it exists
-  if (previousUrl) {
-    document.getElementById("longUrl").value = previousUrl;
-  }
 }
 
 async function handleSubmit(event) {
@@ -175,29 +150,22 @@ async function handleSubmit(event) {
   }
 
   try {
-    showMainUI("", true); // Show loading indicator
+    showMainUI("", true);
     const existingShortCode = await getExistingShortCode(longUrl);
     if (existingShortCode) {
-      // URL already exists, show the short URL
-      const currentUrl = window.location.href;
-      const baseUrl = currentUrl.endsWith("/") ? currentUrl : `${currentUrl}/`;
-      const shortUrl = baseUrl + existingShortCode;
-      showMainUI(
-        `Existing short URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`,
-      );
+      showShortUrl(existingShortCode);
     } else {
-      // URL doesn't exist, attempt to connect wallet and create short URL
       const walletConnection = document.querySelector(
         "arweave-wallet-connection",
       );
-      if (!walletConnection.walletAddress) {
-        const connected = await walletConnection.connectWallet();
-        if (!connected) {
-          showMainUI(
-            "Wallet connection is required to create a new short URL. Please try again.",
-          );
-          return;
-        }
+      if (
+        !walletConnection.walletAddress &&
+        !(await walletConnection.connectWallet())
+      ) {
+        showMainUI(
+          "Wallet connection is required to create a new short URL. Please try again.",
+        );
+        return;
       }
       await createShortUrl(longUrl);
     }
@@ -207,69 +175,10 @@ async function handleSubmit(event) {
   }
 }
 
-// URL Operations
-async function checkUrl() {
-  const longUrlInput = document.getElementById("longUrl");
-  const longUrl = longUrlInput.value;
-  if (!longUrl) {
-    alert("Please enter a URL to check.");
-    return;
-  }
-
-  try {
-    const existingShortCode = await getExistingShortCode(longUrl);
-    if (existingShortCode) {
-      // Ensure the URL ends with a slash before appending the short code
-      const currentUrl = window.location.href;
-      const baseUrl = currentUrl.endsWith("/") ? currentUrl : `${currentUrl}/`;
-      const shortUrl = baseUrl + existingShortCode;
-
-      showMainUI(
-        `Existing short URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`,
-      );
-    } else {
-      showMainUI(
-        "This URL hasn't been shortened yet. Please connect your wallet to submit it.",
-      );
-    }
-
-    // After showing the main UI, set the input value back to the original URL
-    document.getElementById("longUrl").value = longUrl;
-
-    // Update button visibility
-    document.getElementById("checkUrlButton").style.display = "none";
-    document.getElementById("submitUrlButton").style.display = "block";
-  } catch (error) {
-    console.error("Error checking URL:", error);
-    showMainUI(`An error occurred while checking the URL: ${error.message}`);
-  }
-}
-
-async function submitUrl() {
-  const longUrl = document.getElementById("longUrl").value;
-  const walletConnection = document.querySelector("arweave-wallet-connection");
-
-  if (!walletConnection.walletAddress) {
-    alert("Please connect your wallet first.");
-    return;
-  }
-
-  createShortUrl(longUrl);
-}
-
-// Modify the createShortUrl function
 async function createShortUrl(longUrl) {
-  console.log("Creating short URL for:", longUrl);
   const walletConnection = document.querySelector("arweave-wallet-connection");
-
-  if (!walletConnection.walletAddress) {
-    alert("Please connect your wallet first.");
-    return;
-  }
-
   try {
-    showMainUI("", true); // Show loading indicator
-
+    showMainUI("", true);
     let shortCode;
     do {
       shortCode = generateShortCode();
@@ -281,22 +190,9 @@ async function createShortUrl(longUrl) {
       { name: "Short-Code", value: shortCode },
     ];
 
-    const { Messages, Error } =
-      await walletConnection.sendMessageToArweave(tags);
-
-    const response = JSON.parse(Messages[0].Data);
-    if (response.error) {
-      console.error(response.error);
-    }
-
+    await walletConnection.sendMessageToArweave(tags);
     console.log("Short code created:", shortCode);
-
-    const currentUrl = window.location.href;
-    const baseUrl = currentUrl.endsWith("/") ? currentUrl : `${currentUrl}/`;
-    const shortUrl = `${baseUrl}${shortCode}`;
-    showMainUI(
-      `Your new short URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`,
-    );
+    showShortUrl(shortCode);
   } catch (error) {
     console.error("Error creating short URL:", error);
     showMainUI(
@@ -305,18 +201,14 @@ async function createShortUrl(longUrl) {
   }
 }
 
-// Add this function to generate a short code
 function generateShortCode(length = 6) {
   const chars =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let code = "";
-  for (let i = 0; i < length; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
+  return Array.from({ length }, () =>
+    chars.charAt(Math.floor(Math.random() * chars.length)),
+  ).join("");
 }
 
-// Add this function to check if a short code already exists
 async function shortCodeExists(shortCode) {
   const query = `
     query {
@@ -342,12 +234,12 @@ async function shortCodeExists(shortCode) {
     return results.data.transactions.edges.length > 0;
   } catch (error) {
     console.error("Error checking short code existence:", error);
+    throw error;
   }
 }
 
-// Arweave Query Functions
 async function getExistingShortCode(longUrl) {
-  console.log("Checking for existing short code for URL:", longUrl);
+  console.log(`Checking for existing short code for URL: ${longUrl}`);
   const query = `
     query {
       transactions(
@@ -372,23 +264,31 @@ async function getExistingShortCode(longUrl) {
 
   try {
     const results = await argql.run(query);
-    console.log("Query results for existing short code:", results);
+    console.log("Query results:", results);
 
     if (results.data.transactions.edges.length > 0) {
       const tags = results.data.transactions.edges[0].node.tags;
-      const shortCode = tags.find((tag) => tag.name === "Short-Code")?.value;
-      console.log("Existing short code found:", shortCode);
+      const shortCode =
+        tags.find((tag) => tag.name === "Short-Code")?.value || null;
+
+      if (shortCode) {
+        console.log(`Existing short code found: ${shortCode}`);
+      } else {
+        console.log("No short code found in the transaction tags");
+      }
+
       return shortCode;
     }
-    console.log("No existing short code found");
+
+    console.log("No existing transaction found for this URL");
     return null;
   } catch (error) {
     console.error("Error in getExistingShortCode:", error);
+    throw error;
   }
 }
 
 async function lookupAndRedirect(shortCode) {
-  console.log("Looking up short code:", shortCode);
   showMainUI("", true);
   const query = `
     query {
@@ -414,21 +314,15 @@ async function lookupAndRedirect(shortCode) {
 
   try {
     const results = await argql.run(query);
-    console.log("Query results for lookup:", results);
-
     if (results.data.transactions.edges.length > 0) {
       const tags = results.data.transactions.edges[0].node.tags;
       const longURL = tags.find((tag) => tag.name === "Long-URL")?.value;
-
       if (longURL) {
-        console.log("Long URL found, redirecting to:", longURL);
         window.location.href = longURL;
       } else {
-        console.error("Long URL not found for this short code");
         showMainUI("Short code not found.");
       }
     } else {
-      console.error("Short code not found in query results");
       showMainUI("Short code not found.");
     }
   } catch (error) {
@@ -437,24 +331,28 @@ async function lookupAndRedirect(shortCode) {
   }
 }
 
-// Utility Functions
 function getShortCodeFromPath() {
-  const path = window.location.pathname;
-  const match = path.match(/([A-Za-z0-9]{6})\/?$/);
+  const match = window.location.pathname.match(/([A-Za-z0-9]{6})\/?$/);
   return match ? match[1] : null;
 }
 
 function handlePath() {
   const shortCode = getShortCodeFromPath();
   if (shortCode) {
-    console.log("Short code found in URL, performing lookup");
     lookupAndRedirect(shortCode);
   } else {
-    console.log("No short code in URL, showing form");
     showMainUI();
   }
 }
 
-// Event Listeners
+function showShortUrl(shortCode) {
+  const currentUrl = window.location.href;
+  const baseUrl = currentUrl.endsWith("/") ? currentUrl : `${currentUrl}/`;
+  const shortUrl = `${baseUrl}${shortCode}`;
+  showMainUI(
+    `Your short URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`,
+  );
+}
+
 window.onload = handlePath;
 window.onpopstate = handlePath;
