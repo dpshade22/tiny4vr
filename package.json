@@ -3,8 +3,10 @@
   "module": "index.js",
   "type": "module",
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@types/bun": "latest",
-    "terser": "^5.31.6"
+    "terser": "^5.31.6",
+    "vite": "^5.4.3"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -18,8 +20,8 @@
     "crypto-browserify": "^3.12.0"
   },
   "scripts": {
-    "build": "bun run scripts/build.js",
-    "start": "bun run scripts/dev.js",
-    "deploy": "bun run scripts/uploadManifest.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   }
 }
