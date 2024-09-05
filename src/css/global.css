@@ -1,0 +1,34 @@
+:root {
+    --bg-color: #0d0d0d;
+    --container-bg: #121212;
+    --input-bg: #3a3a3a;
+    --input-focus-bg: #2a2a2a;
+    --button-bg: #5cceff;
+    --button-hover-bg: #1fbcff;
+    --text-color: #ffffff;
+    --placeholder-color: #999;
+    --link-color: #5cceff;
+    --link-hover-color: #1fbcff;
+    --arconnect-button-bg: #4a90e2;
+    --arconnect-button-hover-bg: #357ab8;
+}
+
+body {
+    font-family: "Arial", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        align-items: flex-start;
+        padding: 20px;
+    }
+}

@@ -324,6 +324,7 @@
         const shortUrl = `${baseUrl}${shortCode}`;
         resultMessage = `Your short URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
     }
+    import "./css/global.css";
 </script>
 
 <main>
@@ -348,44 +349,22 @@
 </main>
 
 <style>
-    :global(:root) {
-        --bg-color: #0d0d0d;
-        --container-bg: #121212;
-        --input-bg: #3a3a3a;
-        --input-focus-bg: #2a2a2a;
-        --button-bg: #5cceff;
-        --button-hover-bg: #1fbcff;
-        --text-color: #ffffff;
-        --placeholder-color: #999;
-        --link-color: #5cceff;
-        --link-hover-color: #1fbcff;
-    }
-
-    :global(body) {
-        font-family: "Arial", sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-
     .container {
         background-color: var(--container-bg);
         border-radius: 0.2rem;
-        padding: 30px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
-        width: 100%;
+        padding: 1.875rem; /* 30px / 16px = 1.875rem */
+        box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1); /* 4px 6px converted to rem */
+        width: 90%; /* Use percentage for width instead of vw */
+        max-width: 25rem; /* 400px / 16px = 25rem */
+        min-width: 17.5rem; /* 280px / 16px = 17.5rem */
+        margin: 0 auto; /* Center the container */
     }
 
     .logo {
         max-width: 200px;
         height: auto;
         display: block;
-        margin: 0 auto;
+        margin: 0 auto 20px;
     }
 
     h1 {
@@ -418,19 +397,6 @@
         color: var(--placeholder-color);
     }
 
-    /* Autofill styles for both Webkit and Firefox */
-    input[type="url"]:-webkit-autofill,
-    input[type="url"]:-webkit-autofill:hover,
-    input[type="url"]:-webkit-autofill:focus,
-    input[type="url"]:autofill,
-    input[type="url"]:autofill:hover,
-    input[type="url"]:autofill:focus {
-        -webkit-text-fill-color: var(--text-color);
-        -webkit-box-shadow: 0 0 0px 1000px var(--input-focus-bg) inset;
-        transition: background-color 5000s ease-in-out 0s;
-        filter: none;
-    }
-
     button {
         padding: 10px 20px;
         background-color: var(--button-bg);
@@ -441,8 +407,7 @@
         transition: background-color 0.3s;
     }
 
-    button:hover,
-    :global(#submitUrlButton:hover) {
+    button:hover {
         background-color: var(--button-hover-bg);
     }
 
@@ -463,18 +428,6 @@
         content: "🔗";
         margin-right: 10px;
         font-size: 18px;
-    }
-
-    :global(#result a) {
-        color: var(--link-color);
-        text-decoration: none;
-        font-weight: bold;
-        transition: color 0.3s ease;
-    }
-
-    :global(#result a:hover) {
-        color: var(--link-hover-color);
-        text-decoration: underline;
     }
 
     .loading-container {
@@ -511,13 +464,9 @@
     }
 
     @media screen and (max-width: 768px) {
-        :global(body) {
-            overflow: hidden;
-        }
-
         .container {
-            max-height: 100vh;
-            overflow-y: auto;
+            max-height: none;
+            overflow-y: visible;
         }
     }
 </style>
