@@ -1,37 +1,37 @@
 {
-  "build_id": "1725467548-c3cf",
-  "build_timestamp": "2024-09-04 12:32:30",
-  "file_hash": "97c7365bcbdbc50e4cb8b0ad55a667dd1786538d884a1f515eb0e7d849d8669b",
+  "build_id": "1725511231-327c",
+  "build_timestamp": "2024-09-05 00:40:32",
+  "file_hash": "3ae34d97127d1cfaf26999c3bd7a446a0bbb78f3d87b33c3a8baa313ac08331f",
   "files": {
     "assets/favicon.ico": {
-      "tx_id": "klJ4TSEV96Lls9VW439U9BBNafJPRkG-z-n5DscUe7Q",
+      "tx_id": "nXuKmCiSWuroVqoZrAf-gOrwwcnwSfsgnYUKQeoFT4U",
       "type": "file"
     },
     "assets/tiny4vr.png": {
-      "tx_id": "xW2qyAyTEblS8Toq6Yl89N2m715LTtJaQnm-JjAIWAo",
+      "tx_id": "NBdOixZi3q9webZ9Z9LLTFK9BLGY3fobw5L6kH8E9g0",
       "type": "file"
     },
     "css/styles.css": {
-      "tx_id": "jPCDc8oaksq7Ne3WqiHvCnPhrcXsYER7DILdgYb_EnQ",
+      "tx_id": "enrM0OdawXzY3ZFFFa6Kf5YBwTuvOU1UsI9xDSwdAJM",
       "type": "file"
     },
     "index.html": {
-      "tx_id": "lexiufNKTrzInCrBqE6UGPN-l7jP7EEVS3LaNcj3bpU",
+      "tx_id": "z6fgvCEVk4oLwv8dkpSbse8jD50eTBborwfKbbvPQRM",
       "type": "file"
     },
     "js/index.js": {
-      "tx_id": "adzaQ88K_9EYMyQG9gbwiKG6QYcPou6gEiTPQ4wxarc",
+      "tx_id": "4dcALrnOFyhhEGJPL8eOVtFAoc3z6b5WyeHzPtMxFJA",
       "type": "file"
     },
     "lua/main.lua": {
-      "tx_id": "qX9vFPFc6J--pR4L4b1vrN5dzTbvMeTxQTNCBmfx-NY",
+      "tx_id": "4lCO9ToORis5OgvzOzpupf0jnM3Xs_VL3Ai9wnc-9qs",
       "type": "file"
     }
   },
-  "is_production_build": true,
+  "is_production_build": false,
   "manifest": {
-    "tx_id": "tAzu6a_LQTYv1fbL1OaSy7gyvI3eieSVxsWcI7dHHWY",
+    "tx_id": "z9niZJDCsHmhDO5HfEKWlOcs86RkdKkjCb3CNf2RYWg",
     "type": "file"
   },
-  "version": "0.2.0"
+  "version": "0.2.1"
 }
